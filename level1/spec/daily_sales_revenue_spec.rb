@@ -150,7 +150,99 @@ RSpec.describe DailySalesRevenue do
     end
 
     context 'color mode' do
-      pending
+      context 'color mode is on' do
+        let(:day) { Date.parse('2018-12-06') }
+
+        let(:input) do
+          {
+            'communications' => [
+              {
+                'id' => 123,
+                'practitioner_id' => 456,
+                'pages_number' => 1,
+                'color' => true,
+                'sent_at' => "#{day} 17:11:05"
+              }
+            ]
+          }
+        end
+
+        let(:expected_output) do
+          {
+            totals: [
+              {
+                sent_on: day,
+                total: 0.28
+              }
+            ]
+          }
+        end
+
+        it { expect(DailySalesRevenue.run(input)).to eq expected_output }
+      end
+
+      context 'color mode is off' do
+        context 'explicitely' do
+          let(:day) { Date.parse('2018-12-06') }
+
+          let(:input) do
+            {
+              'communications' => [
+                {
+                  'id' => 123,
+                  'practitioner_id' => 456,
+                  'pages_number' => 1,
+                  'color' => false,
+                  'sent_at' => "#{day} 17:11:05"
+                }
+              ]
+            }
+          end
+
+          let(:expected_output) do
+            {
+              totals: [
+                {
+                  sent_on: day,
+                  total: 0.10
+                }
+              ]
+            }
+          end
+
+          it { expect(DailySalesRevenue.run(input)).to eq expected_output }
+        end
+
+        context 'by default' do
+          let(:day) { Date.parse('2018-12-06') }
+
+          let(:input) do
+            {
+              'communications' => [
+                {
+                  'id' => 123,
+                  'practitioner_id' => 456,
+                  'pages_number' => 1,
+                  'sent_at' => "#{day} 17:11:05"
+                }
+              ]
+            }
+          end
+
+          let(:expected_output) do
+            {
+              totals: [
+                {
+                  sent_on: day,
+                  total: 0.10
+                }
+              ]
+            }
+          end
+
+          it { expect(DailySalesRevenue.run(input)).to eq expected_output }
+        end
+      end
     end
 
     context 'express deliveries' do
