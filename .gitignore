@@ -5,3 +5,4 @@
 !/level2/log/.keep
 !/level2/tmp/.keep
 /level1/vendor
+/level2/vendor/bundler
