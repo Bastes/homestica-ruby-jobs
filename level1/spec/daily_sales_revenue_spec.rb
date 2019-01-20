@@ -246,7 +246,140 @@ RSpec.describe DailySalesRevenue do
     end
 
     context 'express deliveries' do
-      pending
+      context 'express deliveries is on' do
+        let(:day) { Date.parse('2018-12-06') }
+
+        let(:input) do
+          {
+            'practitioners' => [
+              {
+                'id' => 456,
+                'first_name' => 'John',
+                'last_name' => 'You-Knew-Something-They-Did-Not Snow',
+                'express_delivery' => true
+              }
+            ],
+            'communications' => [
+              {
+                'id' => 123,
+                'practitioner_id' => 456,
+                'pages_number' => 1,
+                'color' => false,
+                'sent_at' => "#{day} 17:11:05"
+              }
+            ]
+          }
+        end
+
+        let(:expected_output) do
+          {
+            totals: [
+              {
+                sent_on: day,
+                total: 0.70
+              }
+            ]
+          }
+        end
+
+        it { expect(DailySalesRevenue.run(input)).to eq expected_output }
+      end
+
+      context 'express delivery is off' do
+        context 'explicitely' do
+          let(:day) { Date.parse('2018-12-06') }
+
+          let(:input) do
+            {
+              'practitioners' => [
+                {
+                  'id' => 456,
+                  'first_name' => 'John',
+                  'last_name' => 'You-Knew-Something-They-Did-Not Snow',
+                  'express_delivery' => false
+                }
+              ],
+              'communications' => [
+                {
+                  'id' => 123,
+                  'practitioner_id' => 456,
+                  'pages_number' => 1,
+                  'color' => false,
+                  'sent_at' => "#{day} 17:11:05"
+                }
+              ]
+            }
+          end
+
+          let(:expected_output) do
+            {
+              totals: [
+                {
+                  sent_on: day,
+                  total: 0.10
+                }
+              ]
+            }
+          end
+
+          it { expect(DailySalesRevenue.run(input)).to eq expected_output }
+        end
+
+
+        context 'by default' do
+          let(:day) { Date.parse('2018-12-06') }
+
+          let(:input) do
+            {
+              'practitioners' => [
+                {
+                  'id' => 456,
+                  'first_name' => 'John',
+                  'last_name' => 'You-Knew-Something-They-Did-Not Snow'
+                }
+              ],
+              'communications' => [
+                {
+                  'id' => 123,
+                  'practitioner_id' => 456,
+                  'pages_number' => 1,
+                  'color' => false,
+                  'sent_at' => "#{day} 17:11:05"
+                }
+              ]
+            }
+          end
+
+          let(:expected_output) do
+            {
+              totals: [
+                {
+                  sent_on: day,
+                  total: 0.10
+                }
+              ]
+            }
+          end
+
+          it { expect(DailySalesRevenue.run(input)).to eq expected_output }
+        end
+      end
+    end
+
+    context 'real-life-ish example' do
+      let(:input) do
+        JSON.parse(File.read('./data.json'))
+      end
+
+      let(:expected_output) do
+        JSON.parse(File.read('./output.json')).to_json
+      end
+
+      subject(:output) do
+        DailySalesRevenue.run(input).to_json
+      end
+
+      it { expect(output).to eq expected_output }
     end
   end
 end

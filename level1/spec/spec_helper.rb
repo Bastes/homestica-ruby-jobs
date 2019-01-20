@@ -1,3 +1,4 @@
+require 'json'
 require_relative '../lib/daily_sales_revenue.rb'
 
 RSpec.configure do |config|
