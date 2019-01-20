@@ -1,5 +1,5 @@
 require 'json'
-require_relative '../lib/daily_sales_revenue.rb'
+require_relative '../lib/daily_sales_revenue'
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
