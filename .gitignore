@@ -4,3 +4,4 @@
 /level2/tmp/*
 !/level2/log/.keep
 !/level2/tmp/.keep
+/level1/vendor
